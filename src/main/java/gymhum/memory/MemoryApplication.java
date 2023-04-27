@@ -6,9 +6,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MemoryApplication {
 
-	public static void main(String[] args) {
+	public static void main(String[] args)  {
 		SpringApplication.run(MemoryApplication.class, args);
+		
 	}
+
+	
 }
 
 /*
@@ -37,13 +40,14 @@ public class MemoryApplication {
 		- Allgemeinen Spielablauf vorbereiten ()
 		- Spiellogik aufbauen ()
 		- Gewinn/Verloren-Logik implementieren ()
-	- DB anlegen und Tabellenstruktur aufbauen entsprechend der Models ()
-		- Tabelle für Spieler ()
+	- DB anlegen und Tabellenstruktur aufbauen entsprechend der Models (OK)
+		- Tabelle für Spieler (OK)
 		- Tabelle für Partien ()
 		- Fremdschlüssel Partie-Spieler ()
-	- Spieler und Partie in DB speichern ()
+	- Spieler und Partie in DB speichern (Spieler OK)
 	- Historienansicht aufbauen ()
 
 	- Test und Bugfixing die ganze Zeit beibehalten
 
+	API-KEY Bilddatenbank: O4wyLlJNjXgpFxcJPkqyGrToonSTkQFFvjRw4Nj4J3jgUhhoUxNhnJsu
  */

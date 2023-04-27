@@ -8,15 +8,35 @@
     <body>
         <!-- NAV REPLACE -->
         <nav th:replace="nav.html"></nav>
-        
+
         <div class="container">
             <div class="section">
-                <a class="btn-floating btn-large waves-effect waves-light lighten-2 right"><i class="material-icons">add</i></a>
+                <a class="btn-floating btn-large waves-effect waves-light lighten-2 right" th:href="@{/player/add}"><i class="material-icons">add</i></a>
                 <h4>Manage Players</h4>
             </div>
             <div class="divider"></div>
             <div class="section">
-                Player-List
+                <table>
+                    <thead>
+                      <tr>
+                          <th>Name</th>
+                          <th>Wins</th>
+                          <th>Loose</th>
+                          <th></th>
+                      </tr>
+                    </thead>
+            
+                    <tbody>
+                      <tr th:each="player: ${players}">
+                        <td th:text="${player.getPlayerName()}"></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>
+                            <a class="waves-effect waves-light btn" th:href="@{/player/del(id=${player.getId()})}"><i class="material-icons">delete</i></a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
             </div>
 
         </div>

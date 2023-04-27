@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <!-- NAV REPLACE -->
+        <nav th:replace="nav.html"></nav>
+        <div class="container">
+            <div class="section">
+                <h4>New Player</h4>
+            </div>
+            <div class="divider"></div>
+            <form th:action="@{/player/add/do}" method="post">
+                <div class="section">
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input placeholder="playername..." id="playername" name="playername" type="text" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input placeholder="enter a short pin for access player..." id="key" name="key" type="number" min="100" max="999" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    </body>
+  </html>
