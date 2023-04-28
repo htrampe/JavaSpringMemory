@@ -58,6 +58,21 @@ public class DatabaseController {
 		}
 	}
 
+	public Player getPlayer(int id) throws SQLException{
+		Connection connection = connect();
+		Player player = null;
+		if(connection != null){
+			Statement statement = connection.createStatement();
+			System.out.println("ID: " + id);
+			ResultSet res = statement.executeQuery("SELECT * FROM players WHERE id='"+id+"'");
+			while(res.next()){
+				player = new Player(res.getInt(1), res.getString(2), res.getInt(3));
+			}
+			closeConnection(connection);
+		}
+		return player;
+	}
+
 	public ArrayList<Player> getAllPlayers()  throws SQLException{
 		ArrayList<Player> players = new ArrayList<>();
 
@@ -78,7 +93,10 @@ public class DatabaseController {
 		Connection connection = connect();
 		if(connection != null){
 			Statement statement = connection.createStatement();
+			// TABLE PLAYERS
 			statement.execute("CREATE TABLE IF NOT EXISTS players(id INTEGER PRIMARY KEY, playername TEXT, playerkey TEXT)");
+			// TABLE GAMES
+			statement.execute("CREATE TABLE IF NOT EXISTS games(id INTEGER PRIMARY KEY, player1 TEXT, player2 TEXT)");
 			closeConnection(connection);
 		}
 	}

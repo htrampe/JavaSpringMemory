@@ -29,7 +29,7 @@ public class MemoryApplication {
 	Meileinsteine
 	- Grundprojekt aufsetzen (OK)
 	- Framework Material CSS https://materializecss.com/ einbinden inkl. Navigation (OK) 
-	- Unterseiten erstellen Spieler anlegen/löschen/verändern und Partien löschen ()
+	- Unterseiten erstellen Spieler anlegen/löschen (OK) und Partien löschen ()
 	- Spielmodel implementieren ()
 	- Partiemodel implementieren ()
 	- Memoryansicht implementieren ()
