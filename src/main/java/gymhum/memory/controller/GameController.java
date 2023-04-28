@@ -1,8 +1,13 @@
 package gymhum.memory.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +21,12 @@ import org.springframework.web.servlet.view.RedirectView;
 import gymhum.memory.model.Game;
 import gymhum.memory.model.MemoryCard;
 import gymhum.memory.model.Player;
+
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 @Controller
 public class GameController {
@@ -32,14 +43,43 @@ public class GameController {
     }
 
     @GetMapping("/game/load")
-    public String loadGame(@RequestParam(name="gameId", required = true) int gameId, Model model) throws SQLException{
+    public String loadGame(@RequestParam(name="gameId", required = true) int gameId, Model model) throws SQLException, IOException {
         DatabaseController db = new DatabaseController();
         Game game = db.getGame(gameId);
 
         ArrayList<MemoryCard> memorycards = db.getGameMemoryCards(gameId);
 
         if(memorycards.size() == 0){
-            System.out.println("CARDSSET EMPTY - CREATE");
+
+            // Loading Images
+            // generate Pic-URL
+            int randomPicPage = ThreadLocalRandom.current().nextInt(1, 100);
+            URLConnection connection = new URL("https://api.pexels.com/v1/curated?per_page=63&page=" + randomPicPage).openConnection();
+            connection.setRequestProperty("Authorization", "O4wyLlJNjXgpFxcJPkqyGrToonSTkQFFvjRw4Nj4J3jgUhhoUxNhnJsu");
+            //Get Response  
+            InputStream is = connection.getInputStream();
+            JSONObject jsonObject = new JSONObject(new JSONTokener(is));
+
+            for(int i = 0; i <= 31; i++){
+                // Generate pair key
+                int pairKey = ThreadLocalRandom.current().nextInt(1000000, 9999999);
+    
+                JSONObject pic = (JSONObject) jsonObject.getJSONArray("photos").get(i);
+                String picUrl = pic.getJSONObject("src").getString("medium");
+
+                memorycards.add(new MemoryCard(gameId, pairKey, picUrl, 0));
+                memorycards.add(new MemoryCard(gameId, pairKey, picUrl, 0));
+            }
+
+            // Shuffle the array list
+            Collections.shuffle(memorycards);
+
+            // save new Slot in Card
+            for(int i = 0; i <= 63; i++){
+                memorycards.get(i).setSlot(i);
+            }
+            // TODO: Save MemoryCards to Database!
+            model.addAttribute("cards", memorycards);
         }
         else {
             model.addAttribute("cards", memorycards);

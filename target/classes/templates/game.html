@@ -6,6 +6,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
     <body>
+        <style>
+            img {
+                object-fit: cover;
+                width: 120px;
+                height: 120px;
+            }
+        </style>
         <!-- NAV REPLACE -->
         <nav th:replace="nav.html"></nav>
 
@@ -15,7 +22,14 @@
             </div>
             <div class="divider"></div>
             
-            
+            <div class="section">
+                <div class="row">
+                    <div th:each="card, i: ${cards}" class="col">
+                        <img th:src="${card.getPicUrl()}" class="img">
+                    </div>
+                </div>
+            </div>
+
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     </body>
