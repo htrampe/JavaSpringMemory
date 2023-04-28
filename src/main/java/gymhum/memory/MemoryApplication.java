@@ -8,15 +8,9 @@ public class MemoryApplication {
 
 	public static void main(String[] args)  {
 		SpringApplication.run(MemoryApplication.class, args);
-		
 	}
-
-	
 }
-
 /*
-
-
 	Projektplanung
 
 	Ziele:
@@ -42,9 +36,9 @@ public class MemoryApplication {
 		- Gewinn/Verloren-Logik implementieren ()
 	- DB anlegen und Tabellenstruktur aufbauen entsprechend der Models (OK)
 		- Tabelle für Spieler (OK)
-		- Tabelle für Partien ()
+		- Tabelle für Partien (OK)
 		- Fremdschlüssel Partie-Spieler ()
-	- Spieler und Partie in DB speichern (Spieler OK)
+	- Spieler und Partie in DB speichern (Spieler OK, Partie OK)
 	- Historienansicht aufbauen ()
 
 	- Test und Bugfixing die ganze Zeit beibehalten

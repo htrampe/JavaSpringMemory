@@ -16,6 +16,7 @@ public class IndexController {
     @GetMapping("/")
     public String index(@RequestParam(name="error", required = false, defaultValue = "false") boolean error, Model model) throws SQLException{
         DatabaseController db = new DatabaseController();
+        db.createTable();
         ArrayList<Player> players = db.getAllPlayers();
         model.addAttribute("players", players);
         model.addAttribute("error", error);
