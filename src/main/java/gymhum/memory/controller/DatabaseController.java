@@ -151,7 +151,6 @@ public class DatabaseController {
 	 */
 	public void resetMemoryCardsInGame(int gameid) throws SQLException {
 		Connection connection = connect();
-
 		if(connection != null){
 			Statement statement = connection.createStatement();
 			statement.execute("UPDATE memorycards SET status=0 WHERE gameId='"+gameid+"'");
