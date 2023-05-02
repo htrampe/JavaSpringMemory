@@ -44,6 +44,16 @@ public class GameController {
         return new RedirectView("/game/load");
     }
 
+    @GetMapping("/game/load/resc")
+    public RedirectView resetMemoryCards(RedirectAttributes redirectAttributes, @RequestParam(name="gameid", required = true, defaultValue = "0") int gameid) throws SQLException{
+        
+        DatabaseController db = new DatabaseController();
+        db.resetMemoryCardsInGame(gameid);
+        
+        redirectAttributes.addAttribute("gameId", gameid);
+        return new RedirectView("/game/load");
+    }
+
     @GetMapping("/game/load")
     public String loadGame(@RequestParam(name="gameId", required = true) int gameId, Model model) throws SQLException, IOException {
         DatabaseController db = new DatabaseController();
@@ -51,6 +61,7 @@ public class GameController {
 
         ArrayList<MemoryCard> memorycards = db.getGameMemoryCards(gameId);
         
+        // No Memorycards created - create new set for given game and save to database
         if(memorycards.size() == 0){
 
             // Loading Images
@@ -90,11 +101,25 @@ public class GameController {
             model.addAttribute("cards", memorycards);
         }
         
-        model.addAttribute("game", game);
+        // Count visible Cards in game
+        int visibleCardCount = 0;
+        for(int i = 0; i < memorycards.size(); i++){
+            if(memorycards.get(i).getStatus() == 1){
+                visibleCardCount = visibleCardCount + 1;
+            }
+        }
+        model.addAttribute("visibleCardCount", visibleCardCount);
 
+        model.addAttribute("game", game);
+        model.addAttribute("gameid", gameId);
         return "game.html";
     }
 
+    /*
+     * MemoryCard update ONLY
+     * 
+     * Main gameplay-function in loadGame
+     */
     @GetMapping("/game/uc/")
     public RedirectView updateMemoryCard(RedirectAttributes redirectAttributes, @RequestParam(name="cardid", required = true, defaultValue = "0") int cardid, @RequestParam(name="gameid", required = true, defaultValue = "0") int gameid) throws SQLException{
         

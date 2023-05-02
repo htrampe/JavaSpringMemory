@@ -145,6 +145,20 @@ public class DatabaseController {
 		return lastId;
 	}
 
+	// Reset MemoryCards
+	/*
+	 * Visible Cards will be change to invisible if two cards opened!
+	 */
+	public void resetMemoryCardsInGame(int gameid) throws SQLException {
+		Connection connection = connect();
+
+		if(connection != null){
+			Statement statement = connection.createStatement();
+			statement.execute("UPDATE memorycards SET status=0 WHERE gameId='"+gameid+"'");
+			closeConnection(connection);
+		}
+	}
+
 	public void updateMemoryCard(int cardid, int gameid) throws SQLException{
 		Connection connection = connect();
 

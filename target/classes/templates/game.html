@@ -9,23 +9,42 @@
         <style>
             img {
                 object-fit: cover;
-                width: 120px;
-                height: 120px;
+                width: 110px;
+                height: 110px;
             }
         </style>
         <!-- NAV REPLACE -->
         <nav th:replace="nav.html"></nav>
 
         <div class="container">
-            <div class="section">
-                <div class="row">
+            <div class="row section">
+                <div class="col s1">
+                    Player 1 <p th:text="${visibleCardCount}"></p>
+                </div>
+                <div class="col s11">
                     <div th:each="card, i: ${cards}" class="col">
-                        <a  th:href="@{/game/uc/(cardid=${card.getdbId()}, gameid=${card.getGameId()})}"><img th:src="${card.getPic()}" class="img"></a>
+                        <span th:if="${visibleCardCount == 0 || visibleCardCount == 1}"><a th:href="@{/game/uc/(cardid=${card.getdbId()}, gameid=${card.getGameId()})}"><img th:src="${card.getPic()}" class="img"></a></span>
+                        <span th:if="${visibleCardCount == 2}"><img th:src="${card.getPic()}" class="img"></span>
+                    </div>
+                    <div class="progress col s11" style="margin-left: 11px;">
+                        <div class="determinate" style="width: 0%"></div>
                     </div>
                 </div>
+                
             </div>
-
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script th:inline="javascript" th:if="${visibleCardCount == 2}">
+            $(document).ready(function(){
+                $(".determinate").css({"width":"120%","transition":"7s"});
+                // Autoreload if two cards visible
+                setTimeout(
+                    function() 
+                    {
+                        window.location.href = "/game/load/resc?gameid=[[${gameid}]]";
+                    }, 4000);
+            })
+        </script>
     </body>
   </html>
