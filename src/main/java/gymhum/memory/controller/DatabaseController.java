@@ -35,6 +35,9 @@ public class DatabaseController {
 			statement.execute("CREATE TABLE IF NOT EXISTS games(id INTEGER PRIMARY KEY, player1 TEXT, player2 TEXT, start TEXT, end TEXT)");
 			// TABLE MEMORYCARDS
 			statement.execute("CREATE TABLE IF NOT EXISTS memorycards(id INTEGER PRIMARY KEY, picUrl TEXT, slot TEXT, status TEXT, pairKey TEXT, gameId TEXT)");
+
+
+			
 			closeConnection(connection);
 		}
 	}
@@ -125,6 +128,44 @@ public class DatabaseController {
 	}
 
 	/*
+	 * MEMORY CARD FUNCTIONS
+	 * 
+	 * saveNewCard
+	 */
+	public int saveNewMemorCard(String picUrl, String slot, String status, String pairKey, String gameId) throws SQLException{
+		Connection connection = connect();
+		int lastId = -1;
+		if(connection != null){
+			Statement statement = connection.createStatement();
+			statement.execute("INSERT INTO memorycards (picUrl, slot, status, pairKey, gameId) values ('"+picUrl+"','"+slot+"', '"+status+"', '"+pairKey+"', '"+gameId+"')");
+			ResultSet rs = connection.prepareStatement("select last_insert_rowid();").executeQuery();
+			lastId = rs.getInt("last_insert_rowid()");
+			closeConnection(connection);
+		}
+		return lastId;
+	}
+
+	public void updateMemoryCard(int cardid, int gameid) throws SQLException{
+		Connection connection = connect();
+
+		if(connection != null){
+			Statement statement = connection.createStatement();
+			ResultSet res = statement.executeQuery("SELECT status FROM memorycards WHERE id='"+cardid+"' AND gameId='"+gameid+"'");
+			while(res.next()){
+				System.out.println();
+				if(res.getInt(1) == 0){
+					statement.execute("UPDATE memorycards SET status=1 WHERE id='"+cardid+"'");
+				}
+				else if(res.getInt(1) == 1){
+					statement.execute("UPDATE memorycards SET status=0 WHERE id='"+cardid+"'");
+				}
+			}
+			closeConnection(connection);
+		}
+	}
+
+
+	/*
 	 * GAME FUNCTIONS
 	 * 
 	 * getGame
@@ -185,12 +226,20 @@ public class DatabaseController {
 			Statement statement = connection.createStatement();
 			ResultSet res = statement.executeQuery("SELECT * FROM memorycards WHERE gameId = '"+gameId+"'");
 			while(res.next()){
-				//memoryCards.add();
+				memoryCards.add(new MemoryCard(gameId, res.getInt("pairKey"), res.getString("picUrl"), res.getInt("slot"), res.getInt(1), res.getInt("status")));
 			}
 		}
 		closeConnection(connection);
 		return memoryCards;
 	}
 	
+	public void removeGame(int id) throws SQLException{
+		Connection connection = connect();
+		if(connection != null){
+			Statement statement = connection.createStatement();
+			statement.execute("DELETE FROM games WHERE id='"+id+"'");
+			closeConnection(connection);
+		}
+	}
     
 }

@@ -14,12 +14,48 @@ public class MemoryCard {
     int pairKey;
     int gameId;
 
+    int dbId;
+
+    /*
+     * STANDARD-Bilddaten
+     */
+    String picDone = "https://images.pexels.com/photos/255379/pexels-photo-255379.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+    String hiddenPic = "https://images.pexels.com/photos/1939485/pexels-photo-1939485.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+
+    public MemoryCard(int gameId, int pairKey, String picUrl, int slot, int dbId, int status){
+        setStatus(status);
+        setGameId(gameId);
+        setSlot(slot);
+        setPairKey(pairKey);
+        setPicUrl(picUrl);
+        setDbId(dbId);
+    }
+
     public MemoryCard(int gameId, int pairKey, String picUrl, int slot){
         setStatus(0);
         setGameId(gameId);
         setSlot(slot);
         setPairKey(pairKey);
         setPicUrl(picUrl);
+    }
+
+    public void setDbId(int dbId) {
+        this.dbId = dbId;
+    }
+    public int getdbId() {
+        return dbId;
+    }
+
+    public String getPic(){
+        if(getStatus() == 0){
+            return hiddenPic;
+        }
+        else if(getStatus() == 1){
+            return getPicUrl();
+        }
+
+        return picDone;
+        
     }
 
     public int getGameId() {
