@@ -17,20 +17,34 @@
         <nav th:replace="nav.html"></nav>
 
         <div class="container">
-            <div class="card red lighten-2">
+            <div class="card grey lighten-4">
                 <div class="row section">
                     <div class="col s2">
-                        Player 1 <p th:text="${visibleCardCount}"></p>
+                        <h5 th:if="${cardsAvailable == true}" >
+                            Wer ist dran?
+                        </h5>
+                        <h4 th:if="${cardsAvailable == true}"  th:text="${activePlayer}"></h4>
+                        <hr>
+                        <h5><span><span th:text="${name_p1}"></span>&nbsp;<span th:text="${p1}"></span></span></h5>
+                        <h5><span><span th:text="${name_p2}"></span>&nbsp;<span th:text="${p2}"></span></span></h5>
+                        
                     </div>
-                    <div class="col s10">
+                    <div th:if="${cardsAvailable == true}" class="col s10">
                         <div th:each="card, i: ${cards}" class="col" style="margin-right: -14px; margin-bottom: 4px;">
+                            <!--<span th:text="${card.getPairKey()}"></span>-->
                             <span th:if="${visibleCardCount == 0 || visibleCardCount == 1}"><a th:href="@{/game/uc/(cardid=${card.getdbId()}, gameid=${card.getGameId()})}"><img th:src="${card.getPic()}" class="img"></a></span>
                             <span th:if="${visibleCardCount == 2}"><img th:src="${card.getPic()}" class="img"></span>
                         </div>
-                        <div class="progress col s11" style="margin-left: 10px;">
+                        <div class="progress col s11" style="margin-left: 10px; height: 6px;">
                             <div class="determinate" style="width: 0%"></div>
                         </div>
                     </div>  
+                    <div th:if="${cardsAvailable == false}">
+                        <div class="center">
+                            <h3>Game is over!</h3>
+                        </div>
+                        
+                    </div>
                 </div>
             </div>
         </div>

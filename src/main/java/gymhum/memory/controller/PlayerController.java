@@ -48,7 +48,6 @@ public class PlayerController {
     }
     
     // Reading data from Request and turn it into Player-Object
-    // TODO: Save new Player into Database
     @PostMapping(path="/player/add/do")
     public RedirectView addPlayerDo(@RequestParam MultiValueMap body){
 

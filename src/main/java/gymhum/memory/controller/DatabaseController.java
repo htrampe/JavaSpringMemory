@@ -32,12 +32,12 @@ public class DatabaseController {
 			// TABLE PLAYERS
 			statement.execute("CREATE TABLE IF NOT EXISTS players(id INTEGER PRIMARY KEY, playername TEXT, playerkey TEXT)");
 			// TABLE GAMES
-			statement.execute("CREATE TABLE IF NOT EXISTS games(id INTEGER PRIMARY KEY, player1 TEXT, player2 TEXT, start TEXT, end TEXT)");
+			statement.execute("CREATE TABLE IF NOT EXISTS games(id INTEGER PRIMARY KEY, player1 TEXT, player2 TEXT, start TEXT, end TEXT, activePlayer TEXT, points1 INT, points2 INT)");
 			// TABLE MEMORYCARDS
 			statement.execute("CREATE TABLE IF NOT EXISTS memorycards(id INTEGER PRIMARY KEY, picUrl TEXT, slot TEXT, status TEXT, pairKey TEXT, gameId TEXT)");
-
-
 			
+			//statement.execute("ALTER TABLE games ADD p2 INT;");
+
 			closeConnection(connection);
 		}
 	}
@@ -153,7 +153,7 @@ public class DatabaseController {
 		Connection connection = connect();
 		if(connection != null){
 			Statement statement = connection.createStatement();
-			statement.execute("UPDATE memorycards SET status=0 WHERE gameId='"+gameid+"'");
+			statement.execute("UPDATE memorycards SET status=0 WHERE gameId='"+gameid+"' AND NOT status=2");
 			closeConnection(connection);
 		}
 	}
@@ -163,9 +163,8 @@ public class DatabaseController {
 
 		if(connection != null){
 			Statement statement = connection.createStatement();
-			ResultSet res = statement.executeQuery("SELECT status FROM memorycards WHERE id='"+cardid+"' AND gameId='"+gameid+"'");
+			ResultSet res = statement.executeQuery("SELECT status FROM memorycards WHERE id='"+cardid+"' AND gameId='"+gameid+"' AND NOT status=2");
 			while(res.next()){
-				System.out.println();
 				if(res.getInt(1) == 0){
 					statement.execute("UPDATE memorycards SET status=1 WHERE id='"+cardid+"'");
 				}
@@ -173,6 +172,16 @@ public class DatabaseController {
 					statement.execute("UPDATE memorycards SET status=0 WHERE id='"+cardid+"'");
 				}
 			}
+			closeConnection(connection);
+		}
+	}
+
+	public void updateMemoryCardStatus(int cardid, int status) throws SQLException{
+		Connection connection = connect();
+
+		if(connection != null){
+			Statement statement = connection.createStatement();
+			statement.execute("UPDATE memorycards SET status='"+status+"' WHERE id='"+cardid+"'");
 			closeConnection(connection);
 		}
 	}
@@ -193,7 +202,45 @@ public class DatabaseController {
 			Statement statement = connection.createStatement();
 			ResultSet res = statement.executeQuery("SELECT * FROM players WHERE id='"+id+"'");
 			while(res.next()){
-				game = new Game(res.getInt(2), res.getInt(3));
+				game = new Game(res.getInt(2), res.getInt(3), res.getInt(6));
+			}
+			closeConnection(connection);
+		}
+		return game;
+	}
+
+	public void alterActivePlayer(int game, int newPlayerId) throws SQLException {
+		Connection connection = connect();
+
+		if(connection != null){
+			Statement statement = connection.createStatement();
+			statement.execute("UPDATE games SET activePlayer="+newPlayerId+" WHERE id='"+game+"'");
+			closeConnection(connection);
+		}
+	}
+
+	public void addPoint(int player, int gameid) throws SQLException {
+		Connection connection = connect();
+		if(connection != null){
+			Statement statement = connection.createStatement();
+			if(player == 1){
+				statement.execute("UPDATE games SET p1=p1+1 WHERE id='"+gameid+"'");
+			}
+			if(player == 2){
+				statement.execute("UPDATE games SET p2=p2+1 WHERE id='"+gameid+"'");
+			}
+			closeConnection(connection);
+		}
+	}
+
+	public Game getGameForGame(int id) throws SQLException {
+		Connection connection = connect();
+		Game game = null;
+		if(connection != null){
+			Statement statement = connection.createStatement();
+			ResultSet res = statement.executeQuery("SELECT * FROM games WHERE id='"+id+"'");
+			while(res.next()){
+				game = new Game(res.getInt(2), res.getInt(3), res.getInt(6), res.getInt(9), res.getInt(10));
 			}
 			closeConnection(connection);
 		}
@@ -205,7 +252,7 @@ public class DatabaseController {
 		int lastId = -1;
 		if(connection != null){
 			Statement statement = connection.createStatement();
-			statement.execute("INSERT INTO games (player1, player2, start) values ('"+player1+"','"+player2+"', '"+game.getStart()+"')");
+			statement.execute("INSERT INTO games (player1, player2, start, activePlayer, p1, p2) values ('"+player1+"','"+player2+"', '"+game.getStart()+"', '0', 0, 0)");
 			ResultSet rs = connection.prepareStatement("select last_insert_rowid();").executeQuery();
 			lastId = rs.getInt("last_insert_rowid()");
 			closeConnection(connection);
@@ -224,7 +271,7 @@ public class DatabaseController {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 				Date parsedDate = (Date) dateFormat.parse(res.getString(4));
 				Timestamp timestamp = new Timestamp(parsedDate.getTime());
-				games.add(new Game(res.getInt(1), res.getInt(2), res.getInt(3), timestamp));
+				games.add(new Game(res.getInt(1), res.getInt(2), res.getInt(3), timestamp, res.getInt(9), res.getInt(10)));
 			}
 		}
 		closeConnection(connection);

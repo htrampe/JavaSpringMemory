@@ -53,9 +53,8 @@ public class MemoryCard {
         else if(getStatus() == 1){
             return getPicUrl();
         }
-
-        return picDone;
         
+        return picDone;
     }
 
     public int getGameId() {
